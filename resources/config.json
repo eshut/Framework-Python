@@ -1,0 +1,9 @@
+{
+  "actualBrowser": "ChromeBrowser",
+  "SITE": "https://vk.com",
+  "APIHost" : "https://api.vk.com/",
+  "DIR": "\\[A1QA]\\TEMP",
+  "Files": "\\resources\\files",
+  "LOCAL": "en",
+  "WaitTime" : 25
+}
