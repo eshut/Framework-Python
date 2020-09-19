@@ -3,8 +3,9 @@ import os
 import time
 
 from framework.common import jsonGetter
+
 CONFIG = 'resources/config.json'
-BROWSER = jsonGetter.GetJson.getFile(CONFIG,"actualBrowser")
+BROWSER = jsonGetter.GetJson.get_file(CONFIG, "actualBrowser")
 
 
 class Logger:
@@ -33,6 +34,5 @@ class Logger:
         self.logger.addHandler(fh)
         self.logger.addHandler(ch)
 
-    def getlog(self):
+    def get_log(self):
         return self.logger
-

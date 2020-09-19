@@ -1,1 +1,0 @@
---html=reports/report.html --testrail --tr-config=resources/testrail.cfg

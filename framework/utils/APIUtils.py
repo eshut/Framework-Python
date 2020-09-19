@@ -1,10 +1,10 @@
-#from framework.Base.BaseElement import *
+# from framework.Base.BaseElement import *
 import requests
+
 from framework.logger.logger import Logger
-from framework.common import jsonGetter
 
+logger = Logger(__file__).get_log()
 
-logger = Logger(__file__).getlog()
 
 class API:
     def __init__(self, site):
@@ -19,7 +19,7 @@ class API:
         result = req
         return result
 
-    def getJson(self, get):
+    def get_json(self, get):
         logger.info("Trying to get Json")
         req = requests.get(self.site + get)
         result = req.status_code
@@ -29,14 +29,8 @@ class API:
         except:
             return "NOT JSON!"
 
-    def SendPOST(self, get, data):
-        logger.info("Trying to send POST data")
+    def send_post(self, get, data):
+        logger.info("Trying to send POST data to: " + str(self.site + get) + " With data: " + str(data))
         result = requests.post(self.site + get, data=data)
+        logger.info("Got response: " + str(result) + "With data: " + str(result.text))
         return result
-
-
-
-
-
-
-

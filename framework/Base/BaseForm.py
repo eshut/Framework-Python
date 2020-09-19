@@ -1,12 +1,12 @@
-from framework.Base import BaseElement
 from selenium.common.exceptions import StaleElementReferenceException
 
 from framework.logger.logger import Logger
-logger = Logger(__file__).getlog()
+
+logger = Logger(__file__).get_log()
 
 
 class BaseForm():
-    def __init__(self, elem= ""):
+    def __init__(self, elem=""):
         self.elem = elem
 
     def isDisplayed(self):

@@ -1,16 +1,17 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
-from framework.common import jsonGetter
 
+from framework.common import jsonGetter
 
 CONFIG = 'resources/config.json'
 BROWSERS = ["ChromeBrowser", "FireFoxBrowser"]
-LOCAL = jsonGetter.GetJson.getFile(CONFIG, "LOCAL")
+LOCAL = jsonGetter.GetJson.get_file(CONFIG, "LOCAL")
+
 
 class ChromeBrowser():
-    def runBrowser(self, locale="en"):
-        DIR = jsonGetter.GetJson.getFile(CONFIG, "DIR")
+    def run_browser(self, locale="en"):
+        DIR = jsonGetter.GetJson.get_file(CONFIG, "DIR")
         preferences = {"download.default_directory": DIR, "safebrowsing.enabled": "false"}
         options = webdriver.ChromeOptions()
         options.add_argument("--lang={}".format(locale))
@@ -22,8 +23,8 @@ class ChromeBrowser():
 
 
 class FireFoxBrowser():
-    def runBrowser(self, locale="en"):
-        DIR = jsonGetter.GetJson.getConfig("DIR")
+    def run_browser(self, locale="en"):
+        DIR = jsonGetter.GetJson.get_file(CONFIG, "DIR")
         fp = webdriver.FirefoxProfile()
         fp.set_preference("intl.accept_languages", locale)
         fp.set_preference("browser.download.folderList", 2)
@@ -39,6 +40,7 @@ class FireFoxBrowser():
 
 class Singleton(type):
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -51,22 +53,16 @@ class Singleton(type):
             pass
 
 
-
 class BrowserFactory(metaclass=Singleton):
     @staticmethod
-    def getBrowser(browsertype):
+    def get_browser(browsertype):
 
         try:
             if browsertype == BROWSERS.index("FireFoxBrowser"):
-                driver = FireFoxBrowser().runBrowser(LOCAL)
-                # driver.set_window_size(get.resolutionH, get.resolutionW)
-                # driver.maximize_window()
+                driver = FireFoxBrowser().run_browser(LOCAL)
                 return driver
             elif browsertype == BROWSERS.index("ChromeBrowser"):
-                driver = ChromeBrowser().runBrowser(LOCAL)
-                # driver.set_window_size(get.resolutionH, get.resolutionW)
-                # driver.maximize_window()
-
+                driver = ChromeBrowser().run_browser(LOCAL)
                 return driver
             raise AssertionError("Browser not found")
         except AssertionError as _e:
@@ -74,11 +70,11 @@ class BrowserFactory(metaclass=Singleton):
 
 
 class RunBrowser(metaclass=Singleton):
-    def __init__(self, actualBrowser="ChromeBrowser"):
-        actualBrowser = jsonGetter.GetJson.getFile(CONFIG ,"actualBrowser")
-        if actualBrowser in BROWSERS:
-            BROWSERindex = BROWSERS.index(actualBrowser)
-            self.driver = BrowserFactory.getBrowser(BROWSERindex)
+    def __init__(self):
+        actual_browser = jsonGetter.GetJson.get_file(CONFIG, "actualBrowser")
+        if actual_browser in BROWSERS:
+            browser_index = BROWSERS.index(actual_browser)
+            self.driver = BrowserFactory.get_browser(browser_index)
         else:
             raise Exception("Такого браузера нет!")
 

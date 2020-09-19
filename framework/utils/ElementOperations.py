@@ -1,14 +1,15 @@
-from framework.Base.BaseElement import *
 import random
+
+from framework.Base.BaseElement import *
 
 
 class Button(BaseElement):
 
-    def getText(self):
+    def get_text(self):
         '''
         :return: text of element
         '''
-        self._find()
+        self.find()
         return self.element.text
 
     def send(self, keys):
@@ -17,8 +18,12 @@ class Button(BaseElement):
         :return: nothing
         Entering a text to field
         '''
-        self._find()
+        self.find()
         self.element.send_keys(keys)
+
+    def get_attr(self, attr):
+        self.find()
+        return self.element.get_attribute(attr)
 
 
 class Form(BaseElement):
@@ -32,7 +37,7 @@ class Input(BaseElement):
         :return: nothing
         Clear input textfield
         '''
-        self._find()
+        self.find()
         logger.info("Trying to clear a field")
         self.element.clear()
 
@@ -42,29 +47,30 @@ class Input(BaseElement):
         :return: nothing
         Entering a text to field
         '''
-        self._find()
+        self.find()
         self.element.send_keys(keys)
 
 
 class Label(BaseElement):
-    def getText(self):
+    def get_text(self):
         '''
         :return: text of element
         '''
-        self._find()
+        self.find()
         logger.info("Trying to get text of element")
         return self.element.text
 
-    def getAttr(self, attr):
-        self._find()
+    def get_attr(self, attr):
+        self.find()
         return self.element.get_attribute(attr)
+
 
 class DropDown(BaseElement):
     def random(self):
         '''
         :return: random element of dropdown
         '''
-        element = self._finds()
+        element = self.finds()
         element = random.choice(element)
         return element
 
@@ -77,20 +83,11 @@ class CheckBox(BaseElement):
         self.element = random.choice(self.elem)
         return self.element
 
-    def getText(self):
+    def get_text(self):
         '''
         :return: text of element
         '''
-        self._find()
+        self.find()
         logger.info("Trying to get text of element")
         text = self.element.text
         return text
-
-
-
-
-
-
-
-
-

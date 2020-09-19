@@ -1,8 +1,9 @@
 from urllib.parse import urlparse
+
 from framework.Base.BaseElement import *
 
-BROWSER = jsonGetter.GetJson.getFile(CONFIG, "actualBrowser")
-WaitTime = jsonGetter.GetJson.getFile(CONFIG, "WaitTime")
+BROWSER = jsonGetter.GetJson.get_file(CONFIG, "actualBrowser")
+
 
 
 class LinkOperations:
@@ -13,18 +14,18 @@ class LinkOperations:
         self.driver = RunBrowser().driver
         self.link = link
 
-
     def get(self):
         '''
         Follow to link
         '''
         self.driver.get(self.link)
 
-    def auth(self, SITE, login, password):
+    def auth(self, login, password):
         logger.info("Trying to log in")
-        site = urlparse(SITE)
-        link = site.scheme + "://" + login + ":" + password + "@" + site.hostname + site.path
+        site = urlparse(self.link)
+        link = site.scheme + "://" + login + ":" + password + "@" + site.netloc + site.path
         return link
+
 
 class Alert:
     def __init__(self):
@@ -34,8 +35,7 @@ class Alert:
         self.driver = RunBrowser().driver
         self.alert = self.driver.switch_to_alert()
 
-    def getText(self):
-
+    def get_text(self):
         text = self.alert.text
         return text
 
@@ -45,15 +45,29 @@ class Alert:
     def cancel(self):
         self.alert.dismiss()
 
-    def sendText(self, text):
+    def send_text(self, text):
         self.alert.send_keys(text)
+
 
 class IFrame:
     def __init__(self):
         self.driver = RunBrowser().driver
 
-    def switchFrame(self, id):
+    def switch_frame(self, id):
         self.driver.switch_to.frame(id)
 
-    def switchDefault(self):
+    def switch_default(self):
         self.driver.switch_to.default_content()
+
+
+class Browser:
+    def back(self):
+        RunBrowser().driver.back()
+
+    def refresh(self):
+        RunBrowser().driver.refresh()
+
+
+class JavaScript:
+    def exec(self, script):
+        RunBrowser().driver.execute_script(script)

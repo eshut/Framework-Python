@@ -5,32 +5,32 @@ class Cookie():
     def __init__(self):
         self.driver = RunBrowser().driver
 
-    def addCookie(self, cookies):
+    def add_cookie(self, cookies):
         for cookie in cookies:
             self.driver.add_cookie(cookie)
 
-    def deleteCookie(self, cookies):
+    def delete_cookie(self, cookies):
         for cookie in cookies:
             self.driver.delete_cookie(cookie)
 
-    def editCookie(self, cookie, param):
+    def edit_cookie(self, cookie, param):
         x = {"name": cookie, "value": param}
         self.driver.add_cookie(x)
 
-    def deleteAllCookies(self):
+    def delete_all_cookies(self):
         self.driver.delete_all_cookies()
 
-    def getCookies(self):
+    def get_cookies(self):
         cookies = self.driver.get_cookies()
         return cookies
 
-    def getCookie(self, name):
+    def get_cookie(self, name):
         cookie = self.driver.get_cookie(name)
         return cookie
 
-    def splitCookie(self, siteCookies):
+    def split_cookie(self, site_cookies):
         result = []
-        for cookie in siteCookies:
+        for cookie in site_cookies:
             x = cookie.get("name")
             y = cookie.get("value")
             z = {'name': x, 'value': y}
