@@ -1,5 +1,5 @@
-U need to create a testrail config file at resources and name it as testrail.json
-
+To start a project you need to create a testrail config file at resources and name it as testrail.json
+```json
 {   
     "**creditals**": {  
         "*host*": "***https://tr.a1qa.com/***",     
@@ -7,7 +7,8 @@ U need to create a testrail config file at resources and name it as testrail.jso
         "*pass*": "***token***"   
     },     
     "**data**": {   
-        "*project_id*": ***108***,  
-        "*case_id*": "***11345480***"   
+        "*project_id*": ***id***,  
+        "*case_id*": "***id***"   
     }   
 }   
+```
