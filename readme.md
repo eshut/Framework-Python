@@ -7,7 +7,7 @@ To start a project you need to create a testrail config file at resources and na
         "*pass*": "***token***"   
     },     
     "**data**": {   
-        "*project_id*": ***id***,  
+        "*project_id*": "***id***",  
         "*case_id*": "***id***"   
     }   
 }   
