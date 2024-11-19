@@ -2,22 +2,32 @@ import logging
 import os
 import time
 import sys
+from dotenv import load_dotenv
 
-from framework.common import jsonGetter
+# updated to dotenv
+load_dotenv()
+log_level = os.getenv("LOG_LEVEL")
 
-CONFIG = 'resources/config.json'
-BROWSER = jsonGetter.GetJson.get_file(CONFIG, "actualBrowser")
+
+"""
+Usage:
+In any class add inheritance like this, so self.logger.info will be available:
+
+class main(Logger):
+    def __init__(self, logger=__file__):
+        super().__init__(logger)
+"""
 
 
 class Logger:
     def __init__(self, logger):
-        self.log_level = constants.LOG_LEVEL
+        self.log_level = log_level
         self.logger = logging.getLogger(os.path.basename(logger))
         self.logger.setLevel(self.log_level)
         if not os.path.exists("logs"):
             os.mkdir("logs")
 
-        log_time = time.strftime(TOKEN_LOG + '-%Y-%m-%d-%H%M-%S', time.localtime(time.time()))
+        log_time = time.strftime('-%Y-%m-%d-%H%M-%S', time.localtime(time.time()))
         log_path = os.getcwd() + "/logs/"
         log_name = log_path + log_time + '.log'
 
@@ -50,4 +60,3 @@ class Logger:
 
     def error(self, msg, *args, **kwargs):
         self.logger.error(msg, *args, **kwargs)
-
