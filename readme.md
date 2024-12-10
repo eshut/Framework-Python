@@ -10,5 +10,5 @@ but can easily switch with any other driver (such as PlayWright)
     ```
 
 2. `Describe required web pages as it mentioned at:`
-   [Page-Object instructions](./pages/readme.md)
+   [Page-Object instructions](./framework/pages/readme.md)
 3. `import the page and run the autotest/code`
