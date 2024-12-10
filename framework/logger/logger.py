@@ -1,10 +1,12 @@
+"""Framework: https://github.com/eshut/Framework-Python"""
+
 import logging
 import os
 import time
 import sys
 from dotenv import load_dotenv
 
-# updated to dotenv
+
 load_dotenv()
 log_level = os.getenv("LOG_LEVEL")
 
@@ -60,3 +62,17 @@ class Logger:
 
     def error(self, msg, *args, **kwargs):
         self.logger.error(msg, *args, **kwargs)
+
+    def set_prefix(self, prefix):
+        """Update the prefix dynamically."""
+        self.prefix = prefix
+        self._update_formatter()
+
+    def _update_formatter(self):
+        """Update the formatter with the new prefix."""
+        new_format = f'%(asctime)s - %(name)s - %(levelname)s - {self.prefix} - %(message)s'
+        self.formatter = logging.Formatter(new_format)
+
+        # Update formatters for all handlers
+        for handler in self.logger.handlers:
+            handler.setFormatter(self.formatter)

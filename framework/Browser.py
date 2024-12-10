@@ -1,22 +1,35 @@
+"""Framework: https://github.com/eshut/Framework-Python"""
+
+import os
+
+from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.options import Options as FS_options
 
 from framework.common import jsonGetter
 
-CONFIG = 'resources/config.json'
+load_dotenv()
+log_level = os.getenv("LOG_LEVEL")
+localization = os.getenv("LOCALIZATION")
+browser = os.getenv("BROWSER")
+save_dir = os.getenv("SAVE_DIR")
+firefox_location = os.getenv("FIREFOX_LOCATION")
+
+
 BROWSERS = ["ChromeBrowser", "FireFoxBrowser"]
-LOCAL = jsonGetter.GetJson.get_file(CONFIG, "LOCAL")
 
 
 class ChromeBrowser():
     def run_browser(self, locale="en"):
-        DIR = jsonGetter.GetJson.get_file(CONFIG, "DIR")
-        preferences = {"download.default_directory": DIR, "safebrowsing.enabled": "false"}
+        preferences = {"download.default_directory": save_dir, "safebrowsing.enabled": "false"}
         options = webdriver.ChromeOptions()
         options.add_argument("--lang={}".format(locale))
         options.add_experimental_option("prefs", preferences)
-        driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         driver.set_page_load_timeout(20)
         driver.maximize_window()
         return (driver)
@@ -24,16 +37,15 @@ class ChromeBrowser():
 
 class FireFoxBrowser():
     def run_browser(self, locale="en"):
-        DIR = jsonGetter.GetJson.get_file(CONFIG, "DIR")
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("intl.accept_languages", locale)
-        fp.set_preference("browser.download.folderList", 2)
-        fp.set_preference("browser.download.dir", DIR)
-        fp.set_preference("browser.download.manager.showWhenStarting", False)
-        fp.set_preference("browser.helperApps.alwaysAsk.force", False)
-        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream")
-
-        driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), firefox_profile=fp)
+        options = FS_options()
+        options.set_preference("intl.accept_languages", locale)
+        options.set_preference("browser.download.folderList", 2)
+        options.set_preference("browser.download.dir", save_dir)
+        options.set_preference("browser.download.manager.showWhenStarting", False)
+        options.set_preference("browser.helperApps.alwaysAsk.force", False)
+        options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream")
+        options.binary_location = firefox_location
+        driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=options)
         driver.maximize_window()
         return (driver)
 
@@ -59,10 +71,10 @@ class BrowserFactory(metaclass=Singleton):
 
         try:
             if browsertype == BROWSERS.index("FireFoxBrowser"):
-                driver = FireFoxBrowser().run_browser(LOCAL)
+                driver = FireFoxBrowser().run_browser(localization)
                 return driver
             elif browsertype == BROWSERS.index("ChromeBrowser"):
-                driver = ChromeBrowser().run_browser(LOCAL)
+                driver = ChromeBrowser().run_browser(localization)
                 return driver
             raise AssertionError("Browser not found")
         except AssertionError as _e:
@@ -71,10 +83,9 @@ class BrowserFactory(metaclass=Singleton):
 
 class RunBrowser(metaclass=Singleton):
     def __init__(self):
-        actual_browser = jsonGetter.GetJson.get_file(CONFIG, "actualBrowser")
-        if actual_browser in BROWSERS:
-            browser_index = BROWSERS.index(actual_browser)
+        if browser in BROWSERS:
+            browser_index = BROWSERS.index(browser)
             self.driver = BrowserFactory.get_browser(browser_index)
         else:
-            raise Exception("Такого браузера нет!")
+            raise Exception("No Such Browser")
 

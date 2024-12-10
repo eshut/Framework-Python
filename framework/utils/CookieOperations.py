@@ -1,8 +1,12 @@
+"""Framework: https://github.com/eshut/Framework-Python"""
+
 from framework.Base.BaseElement import *
+from framework.logger.logger import Logger
 
 
-class Cookie():
-    def __init__(self):
+class Cookie(Logger):
+    def __init__(self, logger=__file__):
+        super().__init__(logger)
         self.driver = RunBrowser().driver
 
     def add_cookie(self, cookies):

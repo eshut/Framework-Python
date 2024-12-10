@@ -1,29 +1,38 @@
+"""Framework: https://github.com/eshut/Framework-Python"""
+
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-
+from framework.constants import DEFAULT_WAIT_TIME, DEFAULT_LOCATOR_TYPE
 from framework.logger.logger import Logger
-
-logger = Logger(__file__).get_log()
-
 from framework.Browser import *
 from abc import ABC
 
-wait_time = jsonGetter.GetJson.get_file(CONFIG, "WaitTime")
 
+class BaseElement(ABC, Logger):
 
-class BaseElement(ABC):
-
-    def __init__(self, locator_type, locator, parent_elem=None):
+    def __init__(self, locator, locator_type=DEFAULT_LOCATOR_TYPE, parent_elem=None, logger=__file__):
+        super().__init__(logger)
         self.locator_type = locator_type
         self.locator = locator
         self.driver = RunBrowser().driver
         self.elem = parent_elem
+        self.element = None
 
-    def find(self, wait_time=wait_time):
+    def wait_elem(self, wait_time=DEFAULT_WAIT_TIME):
+        wait = WebDriverWait(self.driver, wait_time)
+        try:
+            wait.until(EC.visibility_of_element_located((self.locator_type, self.locator)))
+            return True
+        except TimeoutException:
+            self.logger.debug(f"Element with locator {self.locator} and type {self.locator_type} not found within {wait_time} seconds.")
+            return False
+
+    def find(self, wait_time=DEFAULT_WAIT_TIME):
         '''
+        :param wait_time:
         :param WaitTime: time in seconds while the driver will try to find an element
         :return: element
         '''
@@ -33,7 +42,7 @@ class BaseElement(ABC):
             wait = WebDriverWait(self.elem, wait_time)
 
         try:
-            logger.info("Waiting for element" + self.locator)
+            self.logger.debug("Waiting for element" + self.locator)
             wait.until(EC.visibility_of_element_located((self.locator_type, self.locator)))
             if self.elem == None:
                 self.element = self.driver.find_element(self.locator_type, self.locator)
@@ -41,11 +50,12 @@ class BaseElement(ABC):
                 self.element = self.elem.find_element(self.locator_type, self.locator)
             return self.element
         except TimeoutException:
-            logger.warn("Cannot find such an element!" + self.locator)
+            self.logger.warn("Cannot find such an element!" + self.locator)
             return False
 
-    def finds(self, wait_time=wait_time):
+    def finds(self, wait_time=DEFAULT_WAIT_TIME):
         '''
+        :param wait_time:
         :param WaitTime: time in seconds while the driver will try to find an element
         :return: Many elements
         '''
@@ -55,15 +65,15 @@ class BaseElement(ABC):
             wait = WebDriverWait(self.elem, wait_time)
 
         try:
-            logger.info("Waiting for element" + self.locator)
+            self.logger.debug("Waiting for element" + self.locator)
             wait.until(EC.visibility_of_all_elements_located((self.locator_type, self.locator)))
             if self.elem == None:
                 self.elements = self.driver.find_elements(self.locator_type, self.locator)
             else:
-                self.elements = self.element.find_elements(self.locator_type, self.locator)
+                self.elements = self.elem.find_elements(self.locator_type, self.locator)
             return self.elements
         except TimeoutException:
-            logger.warn("Cannot find such an element!" + self.locator)
+            self.logger.warn("Cannot find such an element!" + self.locator)
             return False
 
     def click(self):
@@ -72,8 +82,22 @@ class BaseElement(ABC):
         Find and click to element
         '''
         self.find()
-        logger.info("Trying to click an element")
+        self.logger.debug("Trying to click an element")
         self.element.click()
+        return self.element
+
+    def force_click(self):
+        '''
+        :return: nothing
+        Find and click to element
+        '''
+        self.find()
+        self.logger.debug("Trying to click an element")
+        try:
+            self.element.click()
+        except Exception as e:
+            self.logger.debug("Trying to JS click an element")
+            self.driver.execute_script("arguments[0].click();", self.element)
         return self.element
 
     def move(self):

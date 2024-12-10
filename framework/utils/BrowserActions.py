@@ -1,13 +1,13 @@
+"""Framework: https://github.com/eshut/Framework-Python"""
+
 from urllib.parse import urlparse
-
 from framework.Base.BaseElement import *
-
-BROWSER = jsonGetter.GetJson.get_file(CONFIG, "actualBrowser")
-
+from framework.logger.logger import Logger
 
 
-class LinkOperations:
-    def __init__(self, link=""):
+class LinkOperations(Logger):
+    def __init__(self, link="", logger=__file__):
+        super().__init__(logger)
         '''
         :param link: Link to get
         '''
@@ -21,7 +21,7 @@ class LinkOperations:
         self.driver.get(self.link)
 
     def auth(self, login, password):
-        logger.info("Trying to log in")
+        self.logger.debug("Trying to log in")
         site = urlparse(self.link)
         link = site.scheme + "://" + login + ":" + password + "@" + site.netloc + site.path
         return link

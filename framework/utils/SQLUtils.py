@@ -1,12 +1,12 @@
-import mysql.connector
+"""Framework: https://github.com/eshut/Framework-Python"""
 
+import mysql.connector
 from framework.logger.logger import Logger
 
-logger = Logger(__file__).get_log()
 
-
-class SQL:
-    def __init__(self, host, user, passwd, database, port):
+class SQL(Logger):
+    def __init__(self, host, user, passwd, database, port, logger=__file__):
+        super().__init__(logger)
         self.db = mysql.connector.connect(host=host, user=user, passwd=passwd, database=database, port=port)
 
     def cursor(self):

@@ -1,9 +1,0 @@
-{ 
- "actualBrowser": "ChromeBrowser", 
- "SITE": "http://localhost:1234/web", 
- "APIHost" : "http://localhost:1234/api", 
- "DIR": "/[A1QA]/TEMP",
- "Files": "/resources/files",
- "LOCAL": "ru", 
- "WaitTime" : 25
-}

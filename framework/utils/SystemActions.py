@@ -1,3 +1,5 @@
+"""Framework: https://github.com/eshut/Framework-Python"""
+
 import base64
 import os
 import random
