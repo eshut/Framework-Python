@@ -1,3 +1,6 @@
+"""Framework: https://github.com/eshut/Framework-Pytho"""
+"""This is marked legacy and not being supported by repo owner anymore. Feel free to push your updates"""
+
 import glob
 import json
 import os
